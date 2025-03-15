@@ -77,7 +77,7 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
                 <p className="text-lg mb-4">
-                  Welcome to HotelBookeroo, where luxury meets comfort. Our hotel offers a unique blend of modern amenities and traditional hospitality.
+                  Welcome to Hotel Viewmont, where luxury meets comfort. Our hotel offers a unique blend of modern amenities and traditional hospitality.
                 </p>
                 <p className="text-lg mb-4">
                   Located in the heart of the city, we provide easy access to major attractions while ensuring a peaceful stay for our guests.

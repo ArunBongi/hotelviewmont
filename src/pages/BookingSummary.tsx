@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format, addDays, differenceInDays } from 'date-fns';
 import { useAuth } from '@/context/AuthContext';
@@ -43,11 +43,16 @@ const BookingSummary = () => {
     return null;
   }
 
+  // Initialize dates from the passed state
+  const initialCheckInDate = new Date(initialDetails.checkInDate);
+  const initialCheckOutDate = new Date(initialDetails.checkOutDate);
+  const initialNights = differenceInDays(initialCheckOutDate, initialCheckInDate);
+
   const [bookingDetails, setBookingDetails] = useState({
     fullName: '',
     email: user?.email || '',
-    checkInDate: new Date(initialDetails.checkInDate),
-    checkOutDate: addDays(new Date(initialDetails.checkInDate), 1),
+    checkInDate: initialCheckInDate,
+    checkOutDate: initialCheckOutDate,
     guests: initialDetails.guests,
     specialRequests: ''
   });
@@ -56,6 +61,43 @@ const BookingSummary = () => {
   const subtotal = room.price * numberOfNights;
   const taxAmount = subtotal * TAX_RATE;
   const totalAmount = subtotal + taxAmount;
+
+  // Update validation to preserve number of nights
+  const validateDates = () => {
+    const currentNights = differenceInDays(bookingDetails.checkOutDate, bookingDetails.checkInDate);
+    if (currentNights < 1) {
+      setBookingDetails(prev => ({
+        ...prev,
+        checkOutDate: addDays(prev.checkInDate, initialNights)
+      }));
+    }
+  };
+
+  useEffect(() => {
+    validateDates();
+  }, [bookingDetails.checkInDate]);
+
+  // Handle check-in date change
+  const handleCheckInDateChange = (date: Date | undefined) => {
+    if (date) {
+      const currentNights = differenceInDays(bookingDetails.checkOutDate, bookingDetails.checkInDate);
+      setBookingDetails(prev => ({
+        ...prev,
+        checkInDate: date,
+        checkOutDate: addDays(date, currentNights)
+      }));
+    }
+  };
+
+  // Handle check-out date change
+  const handleCheckOutDateChange = (date: Date | undefined) => {
+    if (date && date > bookingDetails.checkInDate) {
+      setBookingDetails(prev => ({
+        ...prev,
+        checkOutDate: date
+      }));
+    }
+  };
 
   const handleConfirmBooking = async () => {
     if (!user) {
@@ -183,11 +225,7 @@ const BookingSummary = () => {
                           <Calendar
                             mode="single"
                             selected={bookingDetails.checkInDate}
-                            onSelect={(date) => date && setBookingDetails(prev => ({
-                              ...prev,
-                              checkInDate: date,
-                              checkOutDate: addDays(date, 1)
-                            }))}
+                            onSelect={handleCheckInDateChange}
                             disabled={(date) => date < new Date()}
                             initialFocus
                           />
@@ -213,10 +251,7 @@ const BookingSummary = () => {
                           <Calendar
                             mode="single"
                             selected={bookingDetails.checkOutDate}
-                            onSelect={(date) => date && setBookingDetails(prev => ({
-                              ...prev,
-                              checkOutDate: date
-                            }))}
+                            onSelect={handleCheckOutDateChange}
                             disabled={(date) => date <= bookingDetails.checkInDate}
                             initialFocus
                           />

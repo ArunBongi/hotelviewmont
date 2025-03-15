@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+  <!-- Shield with Decorative Border -->
+  <g transform="translate(50, 50)">
+    <!-- Decorative Top -->
+    <path d="M150 0 C150 0, 120 20, 100 20 C80 20, 50 0, 50 0 C50 0, 80 40, 100 40 C120 40, 150 0, 150 0Z" fill="#722F37"/>
+    
+    <!-- Main Shield -->
+    <path d="M50 20 L250 20 C270 20, 300 40, 300 60 L300 250 C300 300, 250 350, 150 350 C50 350, 0 300, 0 250 L0 60 C0 40, 30 20, 50 20Z" fill="#722F37"/>
+    
+    <!-- Border -->
+    <path d="M50 25 L250 25 C265 25, 295 42, 295 60 L295 250 C295 295, 247 345, 150 345 C53 345, 5 295, 5 250 L5 60 C5 42, 35 25, 50 25Z" fill="none" stroke="#B8B8B8" stroke-width="2"/>
+    
+    <!-- Crown -->
+    <path d="M120 60 L150 40 L180 60 L170 80 L130 80 L120 60Z" fill="white"/>
+    
+    <!-- Letter V -->
+    <path d="M100 100 L150 200 L200 100" stroke="white" stroke-width="8" fill="none"/>
+    
+    <!-- Decorative Scrolls -->
+    <path d="M80 120 C60 120, 40 140, 40 160 C40 180, 60 200, 80 200" stroke="white" stroke-width="3" fill="none"/>
+    <path d="M220 120 C240 120, 260 140, 260 160 C260 180, 240 200, 220 200" stroke="white" stroke-width="3" fill="none"/>
+    
+    <!-- Stars -->
+    <circle cx="120" cy="250" r="5" fill="white"/>
+    <circle cx="150" cy="250" r="5" fill="white"/>
+    <circle cx="180" cy="250" r="5" fill="white"/>
+  </g>
+  
+  <!-- Hotel Text -->
+  <text x="200" y="450" font-family="serif" font-size="48" text-anchor="middle" fill="#722F37">HOTEL</text>
+  
+  <!-- Viewmont Text -->
+  <text x="200" y="500" font-family="serif" font-size="64" text-anchor="middle" font-weight="bold" fill="#722F37">VIEWMONT</text>
+</svg> 

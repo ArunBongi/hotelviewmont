@@ -23,6 +23,7 @@ import Terms from '@/pages/Terms';
 import CookiePolicy from '@/pages/CookiePolicy';
 import Gallery from '@/pages/Gallery';
 import BookingSummary from '@/pages/BookingSummary';
+import Profile from '@/pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,11 @@ const App = () => (
             <Route path="/booking-summary" element={
               <ProtectedRoute>
                 <BookingSummary />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
