@@ -15,7 +15,7 @@ const allRooms: Room[] = [
     price: 125,
     capacity: 1,
     size: 40,
-    images: ['../../public/rooms/single_bedroom1.jpg'],
+    images: ['/rooms/single_bedroom1.jpg'],
     amenities: ['Free Wi-Fi', 'Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
     featured: false,
     status: 'available'
@@ -27,7 +27,7 @@ const allRooms: Room[] = [
     price: 145,
     capacity: 2,
     size: 45,
-    images: ['../../public/rooms/double_bedroom1.jpeg'],
+    images: ['/rooms/double_bedroom1.jpeg'],
     amenities: ['Free Wi-Fi', 'Breakfast','Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
     featured: false,
     status: 'available'

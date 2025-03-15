@@ -5,73 +5,73 @@ import Layout from '@/components/Layout';
 const galleryImages = [
   {
     id: 1,
-    src: '../../public/hotelImages/Hotel_Image2.jpg',
+    src: '/hotelImages/Hotel_Image2.jpg',
     alt: 'Hotel Viewmont Exterior',
     category: 'Exterior'
   },
   {
     id: 2,
-    src: '../../public/hotelImages/Hotel_Image4.jpg',
+    src: '/hotelImages/Hotel_Image4.jpg',
     alt: 'Hotel Viewmont Exterior',
     category: 'Exterior'
   },
   {
     id: 3,
-    src: '../../public/hotelImages/Hotel_Image1.jpeg',
+    src: '/hotelImages/Hotel_Image1.jpeg',
     alt: 'Hotel Lobby',
     category: 'Interior'
   },
   {
     id: 4,
-    src: '../../public/rooms/single_bedroom1.jpg',
+    src: '/rooms/single_bedroom1.jpg',
     alt: 'Single bedroom',
     category: 'Rooms'
   },
   {
     id: 5,
-    src: '../../public/rooms/single_bedroom2.jpg',
+    src: '/rooms/single_bedroom2.jpg',
     alt: 'Single bedroom',
     category: 'Rooms'
   },
   {
     id: 6,
-    src: '../../public/rooms/double_bedroom2.jpeg',
+    src: '/rooms/double_bedroom2.jpeg',
     alt: 'Double bedroom',
     category: 'Rooms'
   },
   {
     id: 7,
-    src: '../../public/rooms/double_bedroom1.jpeg',
+    src: '/rooms/double_bedroom1.jpeg',
     alt: 'Double Bedroom',
     category: 'Rooms'
   },
   {
     id: 8,
-    src: '../../public/rooms/bathroom1.jpg',
+    src: '/rooms/bathroom1.jpg',
     alt: 'Bathroom',
     category: 'Rooms'
   },
   {
     id: 9,
-    src: '../../public/rooms/bathroom2.jpeg',
+    src: '/rooms/bathroom2.jpeg',
     alt: 'Bathroom',
     category: 'Rooms'
   },
   {
     id: 10,
-    src: '../../public/rooms/wash_area.jpeg',
+    src: '/rooms/wash_area.jpeg',
     alt: 'Wash Area',
     category: 'Rooms'
   },
   {
     id: 11,
-    src: '../../public/rooms/wash_area2.jpeg',
+    src: '/rooms/wash_area2.jpeg',
     alt: 'Wash Area',
     category: 'Rooms'
   },
   {
     id: 12,
-    src: '../../public/rooms/wash_area3.jpeg',
+    src: '/rooms/wash_area3.jpeg',
     alt: 'Wash Area',
     category: 'Rooms'
   },
@@ -79,13 +79,13 @@ const galleryImages = [
 
   {
     id: 13,
-    src: '../../public/hotelImages/breakfast_area.jpeg',
+    src: '/hotelImages/breakfast_area.jpeg',
     alt: 'Breakfast Area',
     category: 'Amenities'
   },
   {
     id: 14,
-    src: '../../public/hotelImages/Hotel_Image3.jpg',
+    src: '/hotelImages/Hotel_Image3.jpg',
     alt: 'Reception',
     category: 'Business'
   }
