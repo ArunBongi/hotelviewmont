@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import { rooms } from '@/utils/data';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/context/AuthContext';
+import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase';
 
 const RoomDetail = () => {
   const { id } = useParams();
@@ -23,8 +25,48 @@ const RoomDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const checkOutRef = useRef<HTMLButtonElement>(null);
+  const [bookedDates, setBookedDates] = useState<Date[]>([]);
 
   const room = rooms.find(r => r.id === id);
+
+  useEffect(() => {
+    loadBookedDates();
+  }, [id]);
+
+  const loadBookedDates = async () => {
+    try {
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('check_in_date, check_out_date')
+        .eq('room_id', id);
+
+      if (error) throw error;
+
+      const dates: Date[] = [];
+      bookings?.forEach(booking => {
+        const start = new Date(booking.check_in_date);
+        const end = new Date(booking.check_out_date);
+        
+        // Add all dates between check-in and check-out
+        for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+          dates.push(new Date(date));
+        }
+      });
+
+      setBookedDates(dates);
+    } catch (error) {
+      console.error('Error loading booked dates:', error);
+    }
+  };
+
+  const isDateBooked = (date: Date) => {
+    return bookedDates.some(bookedDate => 
+      bookedDate.getFullYear() === date.getFullYear() &&
+      bookedDate.getMonth() === date.getMonth() &&
+      bookedDate.getDate() === date.getDate()
+    );
+  };
 
   if (!room) {
     return (
@@ -106,10 +148,23 @@ const RoomDetail = () => {
     }
   };
 
-  const handleCheckInDateSelect = (date: Date | undefined) => {
+  const handleCheckInSelect = (date: Date | undefined) => {
     setCheckInDate(date);
     if (date) {
-      setCheckOutDate(addDays(date, 1));
+      // Set minimum check-out date to one day after check-in
+      const minCheckOut = new Date(date);
+      minCheckOut.setDate(minCheckOut.getDate() + 1);
+      setCheckOutDate(minCheckOut);
+      
+      // Clear check-out date if it's before the new minimum
+      if (checkOutDate && checkOutDate < minCheckOut) {
+        setCheckOutDate(undefined);
+      }
+
+      // Focus the check-out date picker after a short delay
+      setTimeout(() => {
+        checkOutRef.current?.click();
+      }, 100);
     }
   };
 
@@ -233,7 +288,7 @@ const RoomDetail = () => {
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Check-in Date</label>
+                  <Label>Check-in Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -247,23 +302,27 @@ const RoomDetail = () => {
                         {checkInDate ? format(checkInDate, "PPP") : <span>Pick a date</span>}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
                         selected={checkInDate}
-                        onSelect={handleCheckInDateSelect}
+                        onSelect={handleCheckInSelect}
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0)) ||
+                          isDateBooked(date)
+                        }
                         initialFocus
-                        disabled={(date) => date < new Date()}
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Check-out Date</label>
+                  <Label>Check-out Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
+                        ref={checkOutRef}
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
@@ -274,13 +333,17 @@ const RoomDetail = () => {
                         {checkOutDate ? format(checkOutDate, "PPP") : <span>Pick a date</span>}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
                         selected={checkOutDate}
                         onSelect={setCheckOutDate}
+                        disabled={(date) =>
+                          !checkInDate ||
+                          date <= checkInDate ||
+                          isDateBooked(date)
+                        }
                         initialFocus
-                        disabled={(date) => date <= (checkInDate || new Date())}
                       />
                     </PopoverContent>
                   </Popover>
