@@ -90,14 +90,14 @@ const Navbar = () => {
           <img src="/logo.svg" alt="Hotel Viewmont" className="h-10" />
           <div className="hidden sm:flex flex-col">
             <span className="text-lg font-semibold text-[#722F37]">Hotel Viewmont</span>
-            <span className="text-xs text-muted-foreground">Luxury & Comfort</span>
+            <span className="text-xs text-muted-foreground">Hotel & Restaurant</span>
           </div>
         </Link>
 
         {/* Mobile menu button */}
         <Button
-          variant="ghost"
-          className="md:hidden"
+          variant="outline"
+          className="md:hidden hover:bg-transparent hover:border-[#722F37] hover:text-[#722F37]"
           onClick={() => setIsOpen(!isOpen)}
         >
           <Menu className="h-6 w-6" />
@@ -105,25 +105,25 @@ const Navbar = () => {
 
         {/* Desktop navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="text-foreground/60 hover:text-foreground transition">
+          <Link to="/" className="text-foreground/60 hover:text-[#722F37] transition">
             Home
           </Link>
-          <Link to="/rooms" className="text-foreground/60 hover:text-foreground transition">
+          <Link to="/rooms" className="text-foreground/60 hover:text-[#722F37] transition">
             Rooms
           </Link>
-          <Link to="/gallery" className="text-foreground/60 hover:text-foreground transition">
+          <Link to="/gallery" className="text-foreground/60 hover:text-[#722F37] transition">
             Gallery
           </Link>
-          <Link to="/about" className="text-foreground/60 hover:text-foreground transition">
+          <Link to="/about" className="text-foreground/60 hover:text-[#722F37] transition">
             About
           </Link>
-          <Link to="/contact" className="text-foreground/60 hover:text-foreground transition">
+          <Link to="/contact" className="text-foreground/60 hover:text-[#722F37] transition">
             Contact
           </Link>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative">
+                <Button variant="outline" className="relative hover:bg-transparent hover:border-[#722F37] hover:text-[#722F37]">
                   <UserCircle className="h-5 w-5" />
                   <span className="sr-only">User menu</span>
                 </Button>
@@ -142,7 +142,11 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => navigate('/login')} variant="default">
+            <Button 
+              onClick={() => navigate('/login')} 
+              variant="outline"
+              className="bg-[#722F37] text-white hover:bg-transparent hover:text-[#722F37] hover:border-[#722F37] transition-colors"
+            >
               Sign In
             </Button>
           )}

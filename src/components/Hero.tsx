@@ -1,108 +1,106 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/utils/animations';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
-interface HeroProps {
-  className?: string;
-}
+const slides = [
+  {
+    image: '/hotelImages/Hotel_Image1.jpeg',
+    title: 'Experience Luxury at Hotel Viewmont',
+    subtitle: 'Discover comfort, elegance, and exceptional service in the heart of the city.'
+  },
+  {
+    image: '/hotelImages/Hotel_Image2.jpg',
+    title: 'Your Perfect Getaway',
+    subtitle: 'Relax in our beautifully designed rooms with stunning views.'
+  },
+  {
+    image: '/hotelImages/Hotel_Image3.jpg',
+    title: 'Business & Leisure',
+    subtitle: 'Modern amenities and professional services for both business and leisure travelers.'
+  }
+];
 
-const Hero = ({ className }: HeroProps) => {
+const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  
-  const slides = [
-    {
-      image: '/hotelImages/Hotel_Image1.jpeg',
-      title: 'Welcome to Luxury & Comfort',
-      subtitle: 'Experience exceptional hospitality in the heart of the city'
-    },
-    {
-      image: '/hotelImages/Hotel_Image2.jpg',
-      title: 'Modern Elegance',
-      subtitle: 'Where contemporary design meets timeless sophistication'
-    },
-    {
-      image: '/hotelImages/Hotel_Image4.jpg',
-      title: 'Your Perfect Escape',
-      subtitle: 'Discover a sanctuary of peace and relaxation'
-    }
-  ];
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div className={cn("relative w-full h-[90vh] overflow-hidden", className)}>
-      {/* Slides */}
+    <section className="relative h-[80vh] overflow-hidden">
       {slides.map((slide, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0 }}
           animate={{ 
-            opacity: index === currentSlide ? 1 : 0,
-            scale: index === currentSlide ? 1.05 : 1
+            opacity: currentSlide === index ? 1 : 0,
+            scale: currentSlide === index ? 1 : 1.1
           }}
-          transition={{ 
-            opacity: { duration: 1 },
-            scale: { duration: 6 }
-          }}
+          transition={{ duration: 0.7 }}
           className="absolute inset-0"
+          style={{
+            zIndex: currentSlide === index ? 1 : 0
+          }}
         >
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ 
-              backgroundImage: `url(${slide.image})`,
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        </motion.div>
-      ))}
-
-      {/* Content */}
-      <div className="relative h-full flex flex-col justify-center items-center text-center px-4 sm:px-6 z-10">
-        <motion.div 
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-6">
-            {slides[currentSlide].title}
-          </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl text-white/90 max-w-3xl mx-auto drop-shadow-lg font-light mb-12">
-            {slides[currentSlide].subtitle}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link to="/rooms">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-medium text-lg px-8 py-7 h-auto rounded-full shadow-lg hover:shadow-xl transition-all">
+          <div className="absolute inset-0">
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+          <div className="container relative z-10 mx-auto px-4 h-full flex items-center">
+            <div className="max-w-2xl">
+              <motion.h1
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: currentSlide === index ? 0 : 20, opacity: currentSlide === index ? 1 : 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
+              >
+                {slide.title}
+              </motion.h1>
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: currentSlide === index ? 0 : 20, opacity: currentSlide === index ? 1 : 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-xl text-white/90 mb-8"
+              >
+                {slide.subtitle}
+              </motion.p>
+              <Button
+                onClick={() => navigate('/rooms')}
+                size="lg"
+                variant="outline"
+                className="bg-[#722F37] text-white hover:bg-white hover:text-[#722F37] hover:border-[#722F37] transition-colors"
+              >
                 View Our Rooms
               </Button>
-            </Link>
+            </div>
           </div>
         </motion.div>
-      </div>
-
-      {/* Slide indicators */}
-      <div className="absolute bottom-12 left-0 right-0 flex justify-center gap-3 z-10">
+      ))}
+      
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === currentSlide 
-                ? 'w-12 bg-primary' 
-                : 'w-6 bg-white/50 hover:bg-white/80'
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              currentSlide === index ? 'bg-white w-6' : 'bg-white/50'
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            onClick={() => setCurrentSlide(index)}
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

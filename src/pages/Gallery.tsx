@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/Layout';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 const galleryImages = [
   {
@@ -95,10 +97,32 @@ const categories = ['All', 'Exterior', 'Interior', 'Rooms', 'Amenities', 'Busine
 
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const filteredImages = selectedCategory === 'All'
     ? galleryImages
     : galleryImages.filter(image => image.category === selectedCategory);
+
+  const handlePrevious = () => {
+    if (selectedImage === null) return;
+    setSelectedImage(selectedImage === 0 ? filteredImages.length - 1 : selectedImage - 1);
+  };
+
+  const handleNext = () => {
+    if (selectedImage === null) return;
+    setSelectedImage(selectedImage === filteredImages.length - 1 ? 0 : selectedImage + 1);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') handlePrevious();
+    if (e.key === 'ArrowRight') handleNext();
+    if (e.key === 'Escape') setSelectedImage(null);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImage]);
 
   return (
     <Layout>
@@ -110,7 +134,10 @@ const Gallery = () => {
           {categories.map(category => (
             <Button
               key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
+              variant={selectedCategory === category ? "default" : "ghost"}
+              className={selectedCategory === category 
+                ? "bg-[#722F37] text-white hover:bg-[#722F37]/90 border-2 border-[#722F37]" 
+                : "text-[#722F37] hover:bg-[#722F37]/10 border-2 border-[#722F37]/30 hover:border-[#722F37] transition-colors"}
               onClick={() => setSelectedCategory(category)}
             >
               {category}
@@ -120,21 +147,70 @@ const Gallery = () => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredImages.map(image => (
-            <div key={image.id} className="group relative overflow-hidden rounded-lg">
+          {filteredImages.map((image, index) => (
+            <div 
+              key={image.id} 
+              className="group relative overflow-hidden rounded-lg cursor-pointer"
+              onClick={() => setSelectedImage(index)}
+            >
               <img
                 src={image.src}
                 alt={image.alt}
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center">
-                <p className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {image.alt}
+                <p className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-4">
+                  Click to view {image.alt}
                 </p>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Image Modal */}
+        <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
+          <DialogContent className="max-w-[90vw] h-[90vh] p-0 bg-black/90">
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Close button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 text-white hover:bg-white/20"
+                onClick={() => setSelectedImage(null)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+
+              {/* Navigation buttons */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-4 text-white hover:bg-white/20"
+                onClick={handlePrevious}
+              >
+                <ChevronLeft className="h-8 w-8" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 text-white hover:bg-white/20"
+                onClick={handleNext}
+              >
+                <ChevronRight className="h-8 w-8" />
+              </Button>
+
+              {/* Image */}
+              {selectedImage !== null && (
+                <img
+                  src={filteredImages[selectedImage].src}
+                  alt={filteredImages[selectedImage].alt}
+                  className="max-h-full max-w-full object-contain"
+                />
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );

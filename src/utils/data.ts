@@ -161,3 +161,5 @@ export const users = [
     role: "guest"
   }
 ];
+
+export const featuredRooms = rooms.slice(0, 3); // Export first 3 rooms as featured rooms

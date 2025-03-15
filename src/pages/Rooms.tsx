@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import RoomCard from '@/components/RoomCard';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import { useNavigate } from 'react-router-dom';
 import { Room } from '@/utils/data';
 import Layout from '@/components/Layout';
@@ -49,14 +48,12 @@ const allRooms: Room[] = [
 const Rooms = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 500]);
   
-  // Filter rooms based on search and price filter
+  // Filter rooms based on search
   const filteredRooms = allRooms.filter(room => {
     const matchesSearch = room.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           room.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPrice = room.price >= priceRange[0] && room.price <= priceRange[1];
-    return matchesSearch && matchesPrice;
+    return matchesSearch;
   });
 
   return (
@@ -65,25 +62,13 @@ const Rooms = () => {
         <h1 className="text-4xl font-bold mb-8">Our Rooms</h1>
         
         {/* Filters */}
-        <div className="mb-10 grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5">
+        <div className="mb-10">
+          <div className="max-w-xl">
             <h3 className="text-lg font-medium mb-2">Search Rooms</h3>
             <Input
               placeholder="Search by room name or features..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          
-          <div className="lg:col-span-5">
-            <h3 className="text-lg font-medium mb-2">Price Range: ${priceRange[0]} - ${priceRange[1]}</h3>
-            <Slider
-              defaultValue={[0, 500]}
-              max={500}
-              step={10}
-              value={priceRange}
-              onValueChange={setPriceRange}
               className="w-full"
             />
           </div>
@@ -103,7 +88,7 @@ const Rooms = () => {
         ) : (
           <div className="text-center py-16">
             <h3 className="text-2xl font-medium mb-2">No rooms match your criteria</h3>
-            <p className="text-muted-foreground">Try adjusting your search or filters.</p>
+            <p className="text-muted-foreground">Try adjusting your search.</p>
           </div>
         )}
       </div>

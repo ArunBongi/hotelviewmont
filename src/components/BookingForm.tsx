@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Room, rooms } from '@/utils/data';
@@ -222,9 +221,9 @@ const BookingForm = ({ preselectedRoomId }: BookingFormProps) => {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-left mt-1"
+                  className="w-full justify-start text-left mt-1 text-[#722F37] hover:text-white bg-white hover:bg-[#722F37] border-[#722F37] transition-colors"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4 text-[#722F37]" />
                   {formData.checkIn ? format(formData.checkIn, 'PPP') : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
@@ -236,6 +235,15 @@ const BookingForm = ({ preselectedRoomId }: BookingFormProps) => {
                   initialFocus
                   disabled={(date) => date < new Date()}
                   className="pointer-events-auto"
+                  classNames={{
+                    nav_button: "text-[#722F37] hover:bg-[#722F37]/10 border-[#722F37]",
+                    nav_button_previous: "absolute left-1",
+                    nav_button_next: "absolute right-1",
+                    day_selected: "bg-[#722F37] text-white hover:bg-[#722F37] hover:text-white focus:bg-[#722F37] focus:text-white",
+                    day_today: "bg-[#722F37]/10 text-[#722F37] font-bold",
+                    day: "text-[#722F37] hover:bg-[#722F37]/10 focus:bg-[#722F37]/10",
+                    head_cell: "text-[#722F37]/60 font-medium",
+                  }}
                 />
               </PopoverContent>
             </Popover>
@@ -247,9 +255,9 @@ const BookingForm = ({ preselectedRoomId }: BookingFormProps) => {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-left mt-1"
+                  className="w-full justify-start text-left mt-1 text-[#722F37] hover:text-white bg-white hover:bg-[#722F37] border-[#722F37] transition-colors"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4 text-[#722F37]" />
                   {formData.checkOut ? format(formData.checkOut, 'PPP') : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
@@ -264,6 +272,15 @@ const BookingForm = ({ preselectedRoomId }: BookingFormProps) => {
                     date < new Date()
                   }
                   className="pointer-events-auto"
+                  classNames={{
+                    nav_button: "text-[#722F37] hover:bg-[#722F37]/10 border-[#722F37]",
+                    nav_button_previous: "absolute left-1",
+                    nav_button_next: "absolute right-1",
+                    day_selected: "bg-[#722F37] text-white hover:bg-[#722F37] hover:text-white focus:bg-[#722F37] focus:text-white",
+                    day_today: "bg-[#722F37]/10 text-[#722F37] font-bold",
+                    day: "text-[#722F37] hover:bg-[#722F37]/10 focus:bg-[#722F37]/10",
+                    head_cell: "text-[#722F37]/60 font-medium",
+                  }}
                 />
               </PopoverContent>
             </Popover>

@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Room } from '@/utils/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, ChevronRight, Users, Square } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
 
 interface RoomCardProps {
   room: Room;
   featured?: boolean;
-  onClick?: () => void;
 }
 
-const RoomCard = ({ room, featured = false, onClick }: RoomCardProps) => {
+const RoomCard = ({ room, featured = false }: RoomCardProps) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [imageIndex, setImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -30,6 +32,34 @@ const RoomCard = ({ room, featured = false, onClick }: RoomCardProps) => {
     return () => clearInterval(interval);
   }, [isHovered, room.images.length]);
 
+  const handleBookNow = () => {
+    if (!user) {
+      navigate('/login', { 
+        state: { 
+          from: `/rooms/${room.id}`,
+          message: 'Please log in to book a room'
+        } 
+      });
+      return;
+    }
+
+    // Navigate directly to booking summary if user is logged in
+    navigate('/booking-summary', {
+      state: {
+        bookingDetails: {
+          roomId: room.id,
+          roomName: room.name,
+          checkInDate: new Date().toISOString(),
+          checkOutDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+          guests: 1,
+          numberOfNights: 1,
+          pricePerNight: room.price,
+          totalPrice: room.price
+        }
+      }
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -42,9 +72,6 @@ const RoomCard = ({ room, featured = false, onClick }: RoomCardProps) => {
         }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={onClick}
-        role={onClick ? "button" : undefined}
-        tabIndex={onClick ? 0 : undefined}
       >
         <div className="relative overflow-hidden aspect-[16/9]">
           {/* Room image */}
@@ -133,21 +160,20 @@ const RoomCard = ({ room, featured = false, onClick }: RoomCardProps) => {
               <Link to={`/rooms/${room.id}`}>
                 <Button
                   variant="ghost"
-                  className="p-0 h-auto text-primary hover:text-primary/90 hover:bg-transparent btn-hover-effect"
+                  className="p-0 h-auto text-[#722F37] hover:text-[#722F37]/80 hover:bg-transparent btn-hover-effect"
                 >
                   View Details
                   <ChevronRight size={16} className="ml-1" />
                 </Button>
               </Link>
               
-              <Link to={`/booking?roomId=${room.id}`}>
-                <Button 
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Book Now
-                </Button>
-              </Link>
+              <Button
+                onClick={handleBookNow}
+                variant="outline"
+                className="bg-[#722F37] text-white hover:bg-transparent hover:text-[#722F37] hover:border-[#722F37] transition-colors"
+              >
+                Book Now
+              </Button>
             </div>
           </div>
         </CardContent>
