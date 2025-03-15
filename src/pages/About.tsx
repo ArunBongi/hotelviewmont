@@ -12,7 +12,7 @@ const About = () => {
           {/* Hero Section */}
           <div className="relative h-96 mb-16 rounded-lg overflow-hidden">
             <img 
-              src="../../public/hotelImages/Hotel_Image2.jpg" 
+              src="/hotelImages/Hotel_Image2.jpg" 
               alt="Hotel exterior" 
               className="w-full h-full object-cover"
             />
@@ -40,7 +40,7 @@ const About = () => {
               </div>
               <div className="rounded-lg overflow-hidden">
                 <img 
-                  src="../../public/hotelImages/Hotel_Image1.jpeg" 
+                  src="/hotelImages/Hotel_Image1.jpeg" 
                   alt="Hotel lobby" 
                   className="w-full h-auto"
                 />
@@ -147,7 +147,7 @@ const About = () => {
             <h2 className="text-3xl font-bold mb-6">Meet Our Tech Lead</h2>
             <div className="w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
               <img 
-                src="../../public/People_images/Arun.jpg" 
+                src="/People_images/Arun.jpg" 
                 alt="Tech Lead" 
                 className="w-full h-full object-cover"
               />

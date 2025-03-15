@@ -1,3 +1,5 @@
+import { getImagePath } from './imageUtils';
+
 export interface Room {
   id: string;
   name: string;
@@ -35,10 +37,10 @@ export const rooms: Room[] = [
     capacity: 1,
     size: 40,
     images: [
-      '../../public/rooms/single_bedroom1.jpg',
-      '../../public/rooms/single_bedroom2.jpg',
-      '../../public/rooms/bathroom1.jpg',
-      '../../public/rooms/wash_area.jpeg'
+      '/rooms/single_bedroom1.jpg',
+      '/rooms/single_bedroom2.jpg',
+      '/rooms/bathroom1.jpg',
+      '/rooms/wash_area.jpeg'
     ],
     amenities: ['Free Wi-Fi', 'Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
     featured: true,
@@ -52,10 +54,10 @@ export const rooms: Room[] = [
     capacity: 2,
     size: 45,
     images: [
-      '../../public/rooms/double_bedroom1.jpeg',
-      '../../public/rooms/double_bedroom2.jpeg',
-      '../../public/rooms/bathroom2.jpeg',
-      '../../public/rooms/wash_area1.jpeg'
+      '/rooms/double_bedroom1.jpeg',
+      '/rooms/double_bedroom2.jpeg',
+      '/rooms/bathroom2.jpeg',
+      '/rooms/wash_area1.jpeg'
     ],
     amenities: ['Free Wi-Fi', 'Breakfast', 'Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
     featured: false,

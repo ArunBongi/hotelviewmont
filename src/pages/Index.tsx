@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Hero from '@/components/Hero';
 import RoomCard from '@/components/RoomCard';
@@ -21,7 +20,7 @@ const Index = () => {
       price: 125,
       capacity: 2,
       size: 40,
-      images: ['../../public/rooms/single_bedroom1.jpg'],
+      images: ['/rooms/single_bedroom1.jpg'],
       amenities: ['Free Wi-Fi', 'Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
       featured: true,
       status: 'available'
@@ -33,7 +32,7 @@ const Index = () => {
       price: 145,
       capacity: 2,
       size: 45,
-      images: ['../../public/rooms/double_bedroom1.jpeg'],
+      images: ['/rooms/double_bedroom1.jpeg'],
       amenities: ['Free Wi-Fi', 'Breakfast','Air Conditioning', 'TV', 'Microwave', 'Refrigerator'],
       featured: false,
       status: 'available'
@@ -87,7 +86,7 @@ const Index = () => {
               </div>
               <div className="rounded-lg overflow-hidden shadow-xl">
                 <img 
-                  src="../../public/hotelImages/Hotel_Image2.jpg" 
+                  src="/hotelImages/Hotel_Image2.jpg" 
                   alt="Hotel Exterior" 
                   className="w-full h-auto"
                 />

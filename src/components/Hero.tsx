@@ -13,17 +13,17 @@ const Hero = ({ className }: HeroProps) => {
   
   const slides = [
     {
-      image: '../../public/hotelImages/Hotel_Image1.jpeg',
+      image: '/hotelImages/Hotel_Image1.jpeg',
       title: 'Welcome to Luxury & Comfort',
       subtitle: 'Experience exceptional hospitality in the heart of the city'
     },
     {
-      image: '../../public/hotelImages/Hotel_Image2.jpg',
+      image: '/hotelImages/Hotel_Image2.jpg',
       title: 'Modern Elegance',
       subtitle: 'Where contemporary design meets timeless sophistication'
     },
     {
-      image: '../../public/hotelImages/Hotel_Image4.jpg',
+      image: '/hotelImages/Hotel_Image4.jpg',
       title: 'Your Perfect Escape',
       subtitle: 'Discover a sanctuary of peace and relaxation'
     }
