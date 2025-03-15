@@ -1,118 +1,105 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Twitter } from 'lucide-react';
 
 const Footer = () => {
-  const quickLinks = [
-    { name: 'Rooms', path: '/rooms' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'My Bookings', path: '/my-bookings' },
-    { name: 'Gallery', path: '/gallery' }
-  ];
-
-  const socialLinks = [
-    { name: 'Facebook', icon: Facebook, url: 'https://facebook.com/hotelviewmont' },
-    { name: 'Instagram', icon: Instagram, url: 'https://instagram.com/hotelviewmont' },
-    { name: 'Twitter', icon: Twitter, url: 'https://twitter.com/hotelviewmont' },
-  ];
-
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-background border-t">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
-          <div className="space-y-5">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">H</span>
-              </div>
-              <span className="font-medium text-xl tracking-wide">Hotel Viewmont</span>
+          <div className="space-y-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <img src="/logo.svg" alt="Hotel Viewmont" className="h-12" />
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-xs">
-              Experience luxury and comfort in our meticulously designed spaces. Your perfect getaway awaits.
+            <p className="text-sm text-muted-foreground">
+              Experience luxury and comfort at Hotel Viewmont. Your perfect stay awaits in our carefully crafted spaces.
             </p>
-            <div className="flex space-x-5">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-primary transition-colors"
-                  aria-label={social.name}
-                >
-                  <social.icon size={20} />
-                </a>
-              ))}
-            </div>
           </div>
-          
+
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-base mb-4">Quick Links</h3>
-            <ul className="space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Contact Information */}
-          <div>
-            <h3 className="font-semibold text-base mb-4">Contact</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <MapPin size={18} className="mt-0.5 flex-shrink-0" />
-                <span>19 Apex Dr<br />Logan Lake, BC V0K 1W0</span>
+            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/rooms" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Our Rooms
+                </Link>
               </li>
-              <li className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <Phone size={18} className="flex-shrink-0" />
-                <span>+1 (250) 299-9019</span>
+              <li>
+                <Link to="/gallery" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Gallery
+                </Link>
               </li>
-              <li className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <Mail size={18} className="flex-shrink-0" />
-                <span>viewmonthotel@gmail.com</span>
+              <li>
+                <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Contact
+                </Link>
               </li>
             </ul>
           </div>
-          
-          {/* Newsletter */}
+
+          {/* Legal */}
           <div>
-            <h3 className="font-semibold text-base mb-4">Newsletter</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Subscribe to receive updates, exclusive offers, and more.
-            </p>
-            <form className="flex flex-col space-y-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 dark:bg-gray-800"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-md transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
+            <h3 className="font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-foreground transition">
+                  Cookie Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="font-semibold mb-4">Contact Us</h3>
+            <ul className="space-y-2">
+              <li className="text-sm text-muted-foreground">
+                123 Viewmont Street
+              </li>
+              <li className="text-sm text-muted-foreground">
+                Vancouver, BC V6B 1A1
+              </li>
+              <li className="text-sm text-muted-foreground">
+                +1 (604) 555-0123
+              </li>
+              <li className="text-sm text-muted-foreground">
+                info@hotelviewmont.com
+              </li>
+            </ul>
+            <div className="flex space-x-4 mt-4">
+              <a href="#" className="text-muted-foreground hover:text-foreground transition">
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-foreground transition">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-foreground transition">
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
-        
-        <div className="pt-10 mt-10 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} Hotel Viewmont. All rights reserved.</p>
-          <div className="mt-2 flex justify-center space-x-6">
-            <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-            <Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link>
-          </div>
+
+        <div className="border-t mt-8 pt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Hotel Viewmont. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

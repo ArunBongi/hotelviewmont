@@ -7,10 +7,24 @@ import {
   Menu, 
   X, 
   User, 
-  Calendar 
+  Calendar,
+  UserCircle
 } from "lucide-react";
 import { getCurrentUser, signOut } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
+} from "@/components/ui/sheet";
 
 interface NavLink {
   name: string;
@@ -25,6 +39,7 @@ const Navbar = () => {
   const { user: authUser, logout } = useAuth();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const navLinks: NavLink[] = [
     { name: "Home", href: "/" },
@@ -69,172 +84,153 @@ const Navbar = () => {
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-slate-800 shadow-sm"
-          : "bg-slate-900"
-      }`}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-medium text-lg transition-opacity duration-200 hover:opacity-80"
-          >
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">H</span>
-            </div>
-            <span className="font-medium tracking-wide text-white">
-              Hotelviewmont
-            </span>
-          </Link>
-
-          {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                className={`py-2 text-sm font-medium transition-colors duration-200
-                  ${
-                    location.pathname === link.href
-                      ? "text-white border-b-2 border-primary"
-                      : "text-gray-300 hover:text-white"
-                  }
-                `}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Auth buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            {isLoading ? (
-              <Button variant="outline" disabled>Loading...</Button>
-            ) : user ? (
-              <>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => navigate('/my-bookings')}
-                  className="bg-primary hover:bg-primary/90 text-white"
-                >
-                  <Calendar className="mr-1 h-4 w-4" />
-                  My Bookings
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={handleLogout}
-                  className="bg-primary hover:bg-primary/90 text-white"
-                >
-                  <LogOut className="mr-1 h-4 w-4" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">
-                  <Button 
-                    variant="outline" 
-                    className="bg-primary hover:bg-primary/90 text-white"
-                  >
-                    <User className="bg-primary hover:bg-primary/90 text-white" />
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-primary hover:bg-primary/90 text-white">
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
-            )}
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link to="/" className="flex items-center space-x-3">
+          <img src="/logo.svg" alt="Hotel Viewmont" className="h-10" />
+          <div className="hidden sm:flex flex-col">
+            <span className="text-lg font-semibold text-[#722F37]">Hotel Viewmont</span>
+            <span className="text-xs text-muted-foreground">Luxury & Comfort</span>
           </div>
+        </Link>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+        {/* Mobile menu button */}
+        <Button
+          variant="ghost"
+          className="md:hidden"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <Menu className="h-6 w-6" />
+        </Button>
+
+        {/* Desktop navigation */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link to="/" className="text-foreground/60 hover:text-foreground transition">
+            Home
+          </Link>
+          <Link to="/rooms" className="text-foreground/60 hover:text-foreground transition">
+            Rooms
+          </Link>
+          <Link to="/gallery" className="text-foreground/60 hover:text-foreground transition">
+            Gallery
+          </Link>
+          <Link to="/about" className="text-foreground/60 hover:text-foreground transition">
+            About
+          </Link>
+          <Link to="/contact" className="text-foreground/60 hover:text-foreground transition">
+            Contact
+          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative">
+                  <UserCircle className="h-5 w-5" />
+                  <span className="sr-only">User menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate('/my-bookings')}>
+                  My Bookings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button onClick={() => navigate('/login')} variant="default">
+              Sign In
+            </Button>
+          )}
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-800 shadow-lg animate-slide-down">
-          <div className="px-4 py-2 space-y-1">
-            {navLinks.map((link) => (
+        {/* Mobile navigation */}
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="grid gap-4 py-4">
               <Link
-                key={link.name}
-                to={link.href}
-                className={`block px-3 py-4 text-base font-medium transition-colors duration-200 border-b border-slate-700
-                  ${
-                    location.pathname === link.href
-                      ? "text-white"
-                      : "text-gray-300 hover:text-white"
-                  }
-                `}
-                onClick={() => setMobileMenuOpen(false)}
+                to="/"
+                className="text-foreground/60 hover:text-foreground transition"
+                onClick={() => setIsOpen(false)}
               >
-                {link.name}
+                Home
               </Link>
-            ))}
-            <div className="flex flex-col gap-2 pt-4 pb-6">
-              {isLoading ? (
-                <Button variant="outline" disabled>Loading...</Button>
-              ) : user ? (
+              <Link
+                to="/rooms"
+                className="text-foreground/60 hover:text-foreground transition"
+                onClick={() => setIsOpen(false)}
+              >
+                Rooms
+              </Link>
+              <Link
+                to="/gallery"
+                className="text-foreground/60 hover:text-foreground transition"
+                onClick={() => setIsOpen(false)}
+              >
+                Gallery
+              </Link>
+              <Link
+                to="/about"
+                className="text-foreground/60 hover:text-foreground transition"
+                onClick={() => setIsOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                to="/contact"
+                className="text-foreground/60 hover:text-foreground transition"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+              {user ? (
                 <>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-center border-white/30 text-white"
-                    onClick={() => {
-                      navigate('/my-bookings');
-                      setMobileMenuOpen(false);
-                    }}
+                  <Link
+                    to="/my-bookings"
+                    className="text-foreground/60 hover:text-foreground transition"
+                    onClick={() => setIsOpen(false)}
                   >
-                    <Calendar className="mr-1 h-4 w-4" />
                     My Bookings
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-center border-white/30 text-white"
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className="text-foreground/60 hover:text-foreground transition"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="justify-start px-2"
                     onClick={() => {
                       handleLogout();
-                      setMobileMenuOpen(false);
+                      setIsOpen(false);
                     }}
                   >
-                    <LogOut className="mr-1 h-4 w-4" />
-                    Logout
+                    Sign Out
                   </Button>
                 </>
               ) : (
-                <>
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full justify-center border-white/30 text-white">
-                      <User className="mr-1 h-4 w-4" />
-                      Login
-                    </Button>
-                  </Link>
-                  <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full justify-center">
-                      Sign Up
-                    </Button>
-                  </Link>
-                </>
+                <Button
+                  onClick={() => {
+                    navigate('/login');
+                    setIsOpen(false);
+                  }}
+                >
+                  Sign In
+                </Button>
               )}
             </div>
-          </div>
-        </div>
-      )}
+          </SheetContent>
+        </Sheet>
+      </nav>
     </header>
   );
 };
