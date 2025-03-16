@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
 
 interface PaymentFormProps {
   amount: number;
@@ -18,6 +19,7 @@ export const PaymentForm = ({ amount, onSuccess }: PaymentFormProps) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
+      setError('Payment system is not ready. Please try again.');
       return;
     }
 
@@ -27,21 +29,21 @@ export const PaymentForm = ({ amount, onSuccess }: PaymentFormProps) => {
     try {
       const { error: submitError, paymentIntent } = await stripe.confirmPayment({
         elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/booking-confirmation`,
-        },
         redirect: 'if_required',
       });
 
       if (submitError) {
-        setError(submitError.message || 'Payment failed. Please try again.');
+        setError(submitError.message || 'An error occurred during payment. Please try again.');
         return;
       }
 
       if (paymentIntent && paymentIntent.status === 'succeeded') {
         onSuccess(paymentIntent);
+      } else {
+        setError('Payment failed. Please try again.');
       }
     } catch (err) {
+      console.error('Payment error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setProcessing(false);
@@ -63,12 +65,22 @@ export const PaymentForm = ({ amount, onSuccess }: PaymentFormProps) => {
         className="w-full"
         disabled={!stripe || processing}
       >
-        {processing ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
+        {processing ? (
+          <div className="flex items-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Processing...
+          </div>
+        ) : (
+          `Pay CAD $${amount.toFixed(2)}`
+        )}
       </Button>
 
-      <p className="text-sm text-muted-foreground text-center">
-        Your payment is secure and encrypted
-      </p>
+      <div className="text-sm text-muted-foreground space-y-2">
+        <p className="text-center">Your payment is secure and encrypted</p>
+        <p className="text-center">Test Card: 4242 4242 4242 4242</p>
+        <p className="text-center">Expiry: Any future date (e.g., 12/24)</p>
+        <p className="text-center">CVC: Any 3 digits (e.g., 123)</p>
+      </div>
     </form>
   );
 }; 

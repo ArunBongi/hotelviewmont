@@ -21,7 +21,7 @@ interface BookingDetails {
   guests: number;
 }
 
-const TAX_RATE = 0.12; // 12% tax
+const TAX_RATE = 0.05; // 5% tax
 
 const BookingSummary = () => {
   const location = useLocation();
@@ -134,45 +134,26 @@ const BookingSummary = () => {
         return;
       }
 
-      // Create booking record
-      const bookingData = {
-        room_id: room.id,
-        user_id: user.id,
-        check_in_date: bookingDetails.checkInDate.toISOString(),
-        check_out_date: bookingDetails.checkOutDate.toISOString(),
-        guests: bookingDetails.guests,
-        total_price: totalAmount,
-        status: 'confirmed',
-        guest_name: bookingDetails.fullName,
-        guest_email: bookingDetails.email,
-        special_requests: bookingDetails.specialRequests || null,
-        created_at: new Date().toISOString()
-      };
-
-      const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
-        .insert([bookingData])
-        .select()
-        .single();
-
-      if (bookingError) {
-        console.error('Booking error:', bookingError);
-        throw bookingError;
-      }
-
-      if (!booking) {
-        throw new Error('Failed to create booking');
-      }
-
-      // Navigate to success page
-      navigate('/booking-confirmation', { 
-        state: { 
-          booking,
-          room: {
-            name: room.name,
-            price: room.price
+      // Navigate to payment page
+      navigate('/payment', {
+        state: {
+          bookingDetails: {
+            id: `BOOKING-${Date.now()}`,
+            name: bookingDetails.fullName,
+            email: bookingDetails.email,
+            roomId: room.id,
+            roomName: room.name,
+            checkIn: bookingDetails.checkInDate.toISOString(),
+            checkOut: bookingDetails.checkOutDate.toISOString(),
+            guests: bookingDetails.guests,
+            nights: numberOfNights,
+            pricePerNight: room.price,
+            subtotal: subtotal,
+            tax: taxAmount,
+            totalPrice: totalAmount,
+            specialRequests: bookingDetails.specialRequests
           }
-        } 
+        }
       });
     } catch (err) {
       console.error('Booking error:', err);
@@ -344,16 +325,13 @@ const BookingSummary = () => {
                     <span>${subtotal}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Tax (12%)</span>
+                    <span>Tax (5%)</span>
                     <span>${taxAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg pt-2 border-t">
                     <span>Total</span>
                     <span>${totalAmount.toFixed(2)}</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-4">
-                    * Payment to be completed at the hotel during check-in
-                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -364,7 +342,7 @@ const BookingSummary = () => {
               onClick={handleConfirmBooking}
               disabled={isLoading || !bookingDetails.fullName || !bookingDetails.email}
             >
-              {isLoading ? 'Confirming...' : 'Confirm Booking'}
+              {isLoading ? 'Processing...' : 'Proceed to Payment'}
             </Button>
           </div>
         </div>

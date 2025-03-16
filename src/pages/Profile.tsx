@@ -18,9 +18,11 @@ import Footer from '@/components/Footer';
 interface UserProfile {
   id: string;
   email: string;
-  full_name: string;
-  phone_number: string;
-  address: string;
+  name: string;
+  phone: string | null;
+  avatar_url: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export default function Profile() {
@@ -40,40 +42,67 @@ export default function Profile() {
         throw new Error('No user found');
       }
 
-      const { data: profile, error } = await supabase
+      console.log('Current user:', user);
+
+      // First, try to get the existing profile
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
-      if (error) throw error;
+      console.log('Fetch profile result:', { existingProfile, fetchError });
 
-      if (profile) {
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
+      }
+
+      if (existingProfile) {
         setProfile({
           id: user.id,
           email: user.email || '',
-          full_name: profile.full_name || '',
-          phone_number: profile.phone_number || '',
-          address: profile.address || '',
+          name: existingProfile.name || '',
+          phone: existingProfile.phone || '',
+          avatar_url: existingProfile.avatar_url,
+          created_at: existingProfile.created_at,
+          updated_at: existingProfile.updated_at,
         });
       } else {
         // Create a new profile if it doesn't exist
-        const newProfile = {
+        const newProfile: UserProfile = {
           id: user.id,
-          email: user.email,
-          full_name: '',
-          phone_number: '',
-          address: '',
+          email: user.email || '',
+          name: '',
+          phone: '',
+          avatar_url: null,
         };
+
+        console.log('Creating new profile:', newProfile);
+
+        const { data: insertData, error: insertError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: user.id,
+            name: '',
+            phone: '',
+            avatar_url: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }])
+          .select()
+          .single();
+
+        console.log('Insert profile result:', { insertData, insertError });
+
+        if (insertError) throw insertError;
         setProfile(newProfile);
-        await supabase.from('profiles').insert([{ id: user.id }]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading profile:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load profile. Please try again later.",
+        description: error.message || "Failed to load profile. Please try again later.",
       });
     } finally {
       setIsLoading(false);
@@ -91,28 +120,42 @@ export default function Profile() {
 
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: profile.id,
-          full_name: profile.full_name,
-          phone_number: profile.phone_number,
-          address: profile.address,
-          updated_at: new Date().toISOString(),
-        });
+      console.log('Updating profile:', profile);
 
-      if (error) throw error;
+      // Update the profile in the database
+      const { data: updateData, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          name: profile.name,
+          phone: profile.phone,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', profile.id)
+        .select()
+        .single();
+
+      console.log('Update profile result:', { updateData, updateError });
+
+      if (updateError) throw updateError;
 
       toast({
         title: "Success",
         description: "Profile updated successfully!",
       });
-    } catch (error) {
+
+      // Update local state with the returned data
+      if (updateData) {
+        setProfile(prev => prev ? {
+          ...prev,
+          ...updateData,
+        } : null);
+      }
+    } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: error.message || "Failed to update profile. Please try again.",
       });
     } finally {
       setIsSaving(false);
@@ -158,39 +201,32 @@ export default function Profile() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="full_name">Full Name</Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <Input
-                    id="full_name"
-                    name="full_name"
-                    value={profile?.full_name || ''}
+                    id="name"
+                    name="name"
+                    value={profile?.name || ''}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone_number">Phone Number</Label>
+                  <Label htmlFor="phone">Phone Number</Label>
                   <Input
-                    id="phone_number"
-                    name="phone_number"
-                    value={profile?.phone_number || ''}
+                    id="phone"
+                    name="phone"
+                    value={profile?.phone || ''}
                     onChange={handleInputChange}
                     placeholder="Enter your phone number"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    value={profile?.address || ''}
-                    onChange={handleInputChange}
-                    placeholder="Enter your address"
-                  />
-                </div>
-
-                <Button type="submit" disabled={isSaving} className="w-full">
+                <Button 
+                  type="submit" 
+                  disabled={isSaving} 
+                  className="w-full bg-[#722F37] hover:bg-[#722F37]/90 text-white"
+                >
                   {isSaving ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
